@@ -1,35 +1,44 @@
 import React from "react";
 import {Block, BlockProps} from "baseui/block";
+import {FlexGrid, FlexGridItem} from "baseui/flex-grid";
+import {useStyletron} from "baseui";
 
 export interface MainLayoutProps {
-    children: React.ReactNode
+    children: React.ReactNode,
+    width?: string
 }
 
 
-const blockProps: BlockProps = {
-    color: 'contentPrimary',
-    backgroundColor: 'backgroundPrimary',
-    maxWidth: '100vw',
-    minHeight: '100vh',
-    overflow: 'hidden',
+const itemProps: BlockProps = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '40px'
 };
 
 const MainLayout: React.FC<MainLayoutProps> = (props) => {
+
+    const [css, theme] = useStyletron();
+
     return(
-        <div>
-            <Block {...blockProps}>
-                <Block
-                    backgroundColor="backgroundPrimary"
-                    color="contentPrimary"
-                    marginTop="scale300"
-                    display="flex"
-                    paddingTop="scale400"
-                    justifyContent="center"
+        <FlexGrid
+            flexGridColumnCount={1}
+            flexGridColumnGap="scale800"
+            flexGridRowGap="scale800"
+        >
+            <FlexGridItem {...itemProps} width={props.width}>
+                <div
+                    className={css({
+                        width: props.width,
+                        margin: 'auto',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    })}
                 >
                     {props.children}
-                </Block>
-            </Block>
-        </div>
+                </div>
+            </FlexGridItem>
+        </FlexGrid>
     )
 }
 
