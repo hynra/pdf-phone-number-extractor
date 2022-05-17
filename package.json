@@ -1,0 +1,30 @@
+{
+  "name": "extract-resi",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@types/styletron-engine-atomic": "^1.1.1",
+    "@types/styletron-react": "^5.0.3",
+    "@types/styletron-standard": "^2.0.2",
+    "baseui": "^11.0.3",
+    "next": "12.1.6",
+    "react": "18.1.0",
+    "react-dom": "18.1.0",
+    "styletron-engine-atomic": "^1.4.8",
+    "styletron-react": "^6.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.34",
+    "@types/react": "18.0.9",
+    "@types/react-dom": "18.0.4",
+    "eslint": "8.15.0",
+    "eslint-config-next": "12.1.6",
+    "typescript": "4.6.4"
+  }
+}
