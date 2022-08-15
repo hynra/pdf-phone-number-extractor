@@ -3,16 +3,25 @@ import {findPhoneNumbersInText} from 'libphonenumber-js/mobile'
 // @ts-ignore
 import * as PDFJS from "pdfjs-dist/build/pdf";
 import {promises} from "dns";
+import {truncate} from "../util/common";
 PDFJS.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS.version}/pdf.worker.min.js`;
 
 export interface ContactInterface {
     title: string;
     phone: string;
+    file: string;
+    page: number;
 }
 
 export interface ProcessParameters {
     files: File[];
     prefixName?: string;
+}
+
+interface ExtractInterface {
+    file:string;
+    number: string;
+    page: number;
 }
 
 function readFileAsync(file: File): Promise<ArrayBuffer> {
@@ -30,9 +39,9 @@ function readFileAsync(file: File): Promise<ArrayBuffer> {
 
 export async function processPdfs({files, prefixName = 'Contact'}: ProcessParameters): Promise<ContactInterface[]> {
     try {
-        let numbersCollected: string[] = [];
+        let numbersCollected: ExtractInterface[] = [];
         for(const file of files){
-            const extractedNumber = await extractPdf(file);
+            const extractedNumber: ExtractInterface[] = await extractPdf(file);
             numbersCollected = [...numbersCollected, ...extractedNumber];
         }
         numbersCollected = [...new Set(numbersCollected)];
@@ -41,7 +50,9 @@ export async function processPdfs({files, prefixName = 'Contact'}: ProcessParame
         for(let i = 0; i < numbersCollected.length; i++){
             const contact: ContactInterface = {
                 title: `${prefixName} ${i+1}`,
-                phone: numbersCollected[i]
+                phone: numbersCollected[i].number,
+                file: numbersCollected[i].file,
+                page: numbersCollected[i].page
             }
             contacts.push(contact);
         }
@@ -52,9 +63,9 @@ export async function processPdfs({files, prefixName = 'Contact'}: ProcessParame
     }
 }
 
-export async function extractPdf(file: File): Promise<string[]> {
+export async function extractPdf(file: File): Promise<ExtractInterface[]> {
     try {
-        let extractedNumbers: string[] = [];
+        let extractedNumbers: ExtractInterface[] = [];
         const pdfArrayBuffer = await readFileAsync(file);
         let docs = await PDFJS.getDocument(pdfArrayBuffer).promise;
         for (let i = 0; i < docs.numPages; i++) {
@@ -67,7 +78,11 @@ export async function extractPdf(file: File): Promise<string[]> {
                     for (const phoneNumber of phoneNumbers) {
                         const foundNumber = phoneNumber.number.number
                         // console.log('Found: ' + foundNumber);
-                        extractedNumbers.push(foundNumber);
+                        extractedNumbers.push({
+                            file: truncate(file.name, 50),
+                            number: foundNumber,
+                            page: i+1
+                        });
                     }
                 }
             }

@@ -13,15 +13,23 @@ import {ContactInterface, processPdfs} from "../core/extractor";
 const Home: NextPage = () => {
 
     const [pdfFiles, setPdfFiles] = React.useState<File[]>([]);
-    const [dataTable, setDataTable] = React.useState<any[]>([]);
+    const [dataPDF, setDataPDF] = React.useState<any[]>([]);
+    const [dataContacts, setDataContacts] = React.useState<any[]>([]);
     const [contacts, setContacts] = React.useState<ContactInterface[]>([]);
 
-    const COLUMNS = ['Name', 'Size',];
+    const COLUMNS_PDF = ['Name', 'Size',];
+    const COLUMNS_CONTACT = ['Title', 'Number', 'File', 'Page'];
 
     React.useEffect(() => {
         if (pdfFiles.length === 0) return;
         processPdfs({files: pdfFiles}).then(extractedContacts => {
             setContacts(extractedContacts);
+            let tempData: any[] = []
+            for(const contact of extractedContacts){
+                const row: any[] = [contact.title, contact.phone, contact.file, contact.page];
+                tempData.push(row);
+            }
+            setDataContacts(tempData);
         })
     }, [pdfFiles]);
 
@@ -29,7 +37,7 @@ const Home: NextPage = () => {
         <div>
             <HeaderNav/>
             <MainLayout>
-                {dataTable.length <= 0 &&
+                {dataPDF.length <= 0 &&
                 <Container>
                     <FileUploader
                         onDrop={(acceptedFiles, rejectedFiles) => {
@@ -40,7 +48,7 @@ const Home: NextPage = () => {
                                 const row: any[] = [truncate(file.name, 50), (file.size / 1000).toFixed() + 'Kb']
                                 tempData.push(row);
                             }
-                            setDataTable(tempData);
+                            setDataPDF(tempData);
                         }}
                         accept='application/pdf'
                         multiple={true}
@@ -48,7 +56,10 @@ const Home: NextPage = () => {
                 </Container>
                 }
                 {
-                    dataTable.length > 0 && <Container><Table columns={COLUMNS} data={dataTable}/></Container>
+                    dataPDF.length > 0 && <Container><Table columns={COLUMNS_PDF} data={dataPDF}/></Container>
+                }
+                {
+                    dataContacts.length > 0 && <Container><Table columns={COLUMNS_CONTACT} data={dataContacts}/></Container>
                 }
             </MainLayout>
         </div>
