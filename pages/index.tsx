@@ -7,14 +7,23 @@ import React from "react";
 import {Table} from "baseui/table-semantic";
 import Container from "../component/container";
 import {truncate} from "../util/common";
+import {ContactInterface, processPdfs} from "../core/extractor";
 
 
 const Home: NextPage = () => {
 
     const [pdfFiles, setPdfFiles] = React.useState<File[]>([]);
     const [dataTable, setDataTable] = React.useState<any[]>([]);
+    const [contacts, setContacts] = React.useState<ContactInterface[]>([]);
 
     const COLUMNS = ['Name', 'Size',];
+
+    React.useEffect(() => {
+        if (pdfFiles.length === 0) return;
+        processPdfs({files: pdfFiles}).then(extractedContacts => {
+            setContacts(extractedContacts);
+        })
+    }, [pdfFiles]);
 
     return (
         <div>
@@ -25,7 +34,6 @@ const Home: NextPage = () => {
                     <FileUploader
                         onDrop={(acceptedFiles, rejectedFiles) => {
                             // handle file upload...
-                            console.log(acceptedFiles, rejectedFiles);
                             setPdfFiles(acceptedFiles);
                             let tempData: any[] = [];
                             for (const file of acceptedFiles) {
