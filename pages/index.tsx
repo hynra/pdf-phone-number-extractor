@@ -1,12 +1,7 @@
 import type {NextPage} from 'next'
 
-import MainLayout from "../component/main-layout";
-import HeaderNav from "../component/header-nav";
-import {FileUploader} from "baseui/file-uploader";
 import React from "react";
-import {Table} from "baseui/table-semantic";
-import Container from "../component/container";
-import {truncate} from "../util/common";
+
 import {ContactInterface, processPdfs} from "../core/extractor";
 
 
@@ -35,33 +30,7 @@ const Home: NextPage = () => {
 
     return (
         <div>
-            <HeaderNav/>
-            <MainLayout>
-                {dataPDF.length <= 0 &&
-                <Container>
-                    <FileUploader
-                        onDrop={(acceptedFiles, rejectedFiles) => {
-                            // handle file upload...
-                            setPdfFiles(acceptedFiles);
-                            let tempData: any[] = [];
-                            for (const file of acceptedFiles) {
-                                const row: any[] = [truncate(file.name, 50), (file.size / 1000).toFixed() + 'Kb']
-                                tempData.push(row);
-                            }
-                            setDataPDF(tempData);
-                        }}
-                        accept='application/pdf'
-                        multiple={true}
-                    />
-                </Container>
-                }
-                {
-                    dataPDF.length > 0 && <Container><Table columns={COLUMNS_PDF} data={dataPDF}/></Container>
-                }
-                {
-                    dataContacts.length > 0 && <Container><Table columns={COLUMNS_CONTACT} data={dataContacts}/></Container>
-                }
-            </MainLayout>
+
         </div>
     )
 }
