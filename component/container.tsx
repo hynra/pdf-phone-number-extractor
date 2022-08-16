@@ -1,43 +1,34 @@
 import React from "react";
-import {Grid} from '@adobe/react-spectrum';
+import {FlexGrid, FlexGridItem} from "baseui/flex-grid";
+import {BlockProps} from "baseui/block";
 
 export interface ContainerProps {
     children: React.ReactNode,
 }
 
+const itemProps: BlockProps = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '40px'
+};
 
 
 const Container: React.FC<ContainerProps> = (props) => {
     return (
-        <Grid
-            areas={{
-                base: [
-                    'header',
-                    'nav',
-                    'content',
-                    'footer'
-                ],
-                M: [
-                    'header   header',
-                    'nav      content',
-                    'nav      content',
-                    'footer   footer'
-                ],
-                L: [
-                    'header header  header',
-                    'nav    content toc',
-                    'nav    content toc',
-                    'footer footer  footer'
-                ]
-            }}
-            columns={{
-                M: ['size-2000', '1fr'],
-                L: ['size-2000', '1fr', 'size-2000']
-            }}
-            gap="size-100"
+        <FlexGrid
+            flexGridColumnCount={1}
+            flexGridColumnGap="scale800"
+            flexGridRowGap="scale800"
         >
-            {props.children}
-        </Grid>
+            <FlexGridItem
+                display='flex'
+                alignItems='center'
+                justifyContent='center'
+            >
+                {props.children}
+            </FlexGridItem>
+        </FlexGrid>
     );
 }
 

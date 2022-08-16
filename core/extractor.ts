@@ -4,7 +4,6 @@ import {findPhoneNumbersInText} from 'libphonenumber-js/mobile'
 import * as PDFJS from "pdfjs-dist/build/pdf";
 import {promises} from "dns";
 import {truncate} from "../util/common";
-
 PDFJS.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS.version}/pdf.worker.min.js`;
 
 export interface ContactInterface {
@@ -14,18 +13,13 @@ export interface ContactInterface {
     page: number;
 }
 
-export interface PdfFileInterface {
-    name: string;
-    size: string
-}
-
 export interface ProcessParameters {
     files: File[];
     prefixName?: string;
 }
 
 interface ExtractInterface {
-    file: string;
+    file:string;
     number: string;
     page: number;
 }
@@ -46,19 +40,18 @@ function readFileAsync(file: File): Promise<ArrayBuffer> {
 export async function processPdfs({files, prefixName = 'Contact'}: ProcessParameters): Promise<ContactInterface[]> {
     try {
         let numbersCollected: ExtractInterface[] = [];
-        for (const file of files) {
+        for(const file of files){
             const extractedNumber: ExtractInterface[] = await extractPdf(file);
             numbersCollected = [...numbersCollected, ...extractedNumber];
         }
-
         // remove duplicate
         numbersCollected = numbersCollected.filter((v, i, a) => a.findIndex(v2 => (v2.number === v.number)) === i)
         numbersCollected = [...new Set(numbersCollected)];
         // console.log('Numbers collected: ',numbersCollected);
         let contacts: ContactInterface[] = [];
-        for (let i = 0; i < numbersCollected.length; i++) {
+        for(let i = 0; i < numbersCollected.length; i++){
             const contact: ContactInterface = {
-                title: `${prefixName} ${i + 1}`,
+                title: `${prefixName} ${i+1}`,
                 phone: numbersCollected[i].number,
                 file: numbersCollected[i].file,
                 page: numbersCollected[i].page
@@ -66,7 +59,7 @@ export async function processPdfs({files, prefixName = 'Contact'}: ProcessParame
             contacts.push(contact);
         }
         return contacts;
-    } catch (e) {
+    }catch (e) {
         console.error(e);
         throw e;
     }
@@ -90,7 +83,7 @@ export async function extractPdf(file: File): Promise<ExtractInterface[]> {
                         extractedNumbers.push({
                             file: truncate(file.name, 50),
                             number: foundNumber,
-                            page: i + 1
+                            page: i+1
                         });
                     }
                 }
