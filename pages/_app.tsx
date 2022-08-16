@@ -13,7 +13,7 @@ function MyApp({Component, pageProps}: AppProps) {
                 <title>Extract Number</title>
             </Head>
             <SSRProvider>
-                <Provider theme={defaultTheme}>
+                <Provider theme={defaultTheme} colorScheme="light">
                     <Component {...pageProps} />
                 </Provider>
             </SSRProvider>

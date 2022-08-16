@@ -14,6 +14,11 @@ export interface ContactInterface {
     page: number;
 }
 
+export interface PdfFileInterface {
+    name: string;
+    size: string
+}
+
 export interface ProcessParameters {
     files: File[];
     prefixName?: string;
