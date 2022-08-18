@@ -138,7 +138,7 @@ const Home: NextPage = () => {
                         <PaginationTable
                             columns={COLUMNS_CONTACT}
                             data={dataContacts}
-                            tableTitle="Contacts Extracted"
+                            tableTitle="Phone Numbers Extracted"
                             showActionButton={dataContacts.length > 0}
                             actionButtonText="Export CSV"
                             onActionClick={() => {
